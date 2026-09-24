@@ -1,0 +1,22 @@
+# API
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+pydantic>=2.6
+pillow>=10.0
+numpy>=1.26
+
+# Models (needed when PIPELINE=real). Install torch AND torchvision for your machine first if they are not
+# already there (both are preinstalled on Colab): https://pytorch.org/get-started/locally/
+transformers>=4.45        # depth and material models
+
+# Detector (DETECTOR_BACKEND=imageai). `pip install imageai` installs no dependencies of its own, so they are listed here.
+imageai>=3.0.3
+opencv-python-headless    # ImageAI imports cv2
+scipy                     # ImageAI imports it at start-up
+tqdm                      # progress bars in ImageAI
+# ImageAI also imports tkinter, which is a system package, not a pip one:
+#   Debian/Ubuntu/Docker:  apt-get install -y python3-tk
+
+# Optional: the earlier Ultralytics detector (DETECTOR_BACKEND=ultralytics). Not needed for ImageAI.
+# ultralytics>=8.3

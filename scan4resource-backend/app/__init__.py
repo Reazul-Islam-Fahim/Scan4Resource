@@ -1,1 +1,0 @@
-"""Scan4Resource API."""

@@ -1,0 +1,8 @@
+path: C:\Users\Startklar\Desktop\scan4resource\scan4resource-backend\scan4resource-backend\data\door_splits
+train: train.txt
+val: val.txt
+names:
+  0: door
+  1: handle
+  2: cabinet door
+  3: refrigerator door
