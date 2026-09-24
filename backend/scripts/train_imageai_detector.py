@@ -102,6 +102,14 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=8, help="lower it if the GPU runs out of memory (minimum 2)")
     ap.add_argument("--drop-empty", action="store_true", help="leave out images without any chosen class")
     ap.add_argument("--rebuild", action="store_true", help="convert the dataset again")
+    ap.add_argument("--resume", action="store_true",
+                    help="start from the best checkpoint already in <workdir>/imageai-dataset/models "
+                         "instead of the plain pretrained yolov3.pt. Use after a disconnect or to keep "
+                         "improving an earlier run. Epoch numbers still start at 1 each time you run this "
+                         "script, so an earlier best (e.g. epoch 40) can be overwritten by a worse epoch 1 "
+                         "of this run if a fresh run's mAP does not beat it; the file only updates when a "
+                         "run's own mAP improves on its own best, so watch the first few 'mAP@0.5' lines "
+                         "and Ctrl+C if they never approach what you had before.")
     args = ap.parse_args()
 
     workdir, weights_dir = Path(args.workdir), Path(args.weights_dir)
@@ -110,6 +118,13 @@ def main() -> None:
     base = download(WEIGHTS_URL.format(name=f"{args.model_type}.pt"), weights_dir / f"{args.model_type}.pt")
     if args.model_type != "yolov3":  # the API's COCO model is yolov3.pt by default
         download(WEIGHTS_URL.format(name="yolov3.pt"), weights_dir / "yolov3.pt")
+
+    if args.resume:
+        try:
+            base, _ = pick_outputs(dataset, args.model_type)
+            print(f"Resuming from {base.name}")
+        except SystemExit:
+            print("No earlier checkpoint found in this workdir; starting from the plain pretrained weights instead.")
 
     from imageai.Detection.Custom import DetectionModelTrainer
 
